@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070c18">
+<meta name="robots" content="noindex">
+<title>Your FH JOANNEUM Study Path</title>
+<link rel="icon" href="assets/fh-joanneum-logo.svg">
+<style>
+  @font-face { font-family: Poppins; font-weight: 300; src: url(assets/fonts/Poppins-Light.ttf) format("truetype"); font-display: swap; }
+  @font-face { font-family: Poppins; font-weight: 500; src: url(assets/fonts/Poppins-Medium.ttf) format("truetype"); font-display: swap; }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(assets/fonts/Poppins-SemiBold.ttf) format("truetype"); font-display: swap; }
+  @font-face { font-family: Poppins; font-weight: 700; src: url(assets/fonts/Poppins-Bold.ttf) format("truetype"); font-display: swap; }
+  :root {
+    --bg: #070c18; --card: rgba(17, 27, 48, .72); --stroke: rgba(160, 190, 255, .16);
+    --text: #f4f6ff; --dim: #9aa7c2; --cyan: #3fe0ff; --purple: #b36bff; --mint: #4df2b5; --violet: #e07bff;
+    --orange: #ffa24c; --red: #e5003d; --level: var(--violet);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; font-family: Poppins, system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--text); background: var(--bg); min-height: 100vh; overflow-x: hidden; }
+  #sky { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; }
+  .nebula { position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(70vmax 45vmax at 5% -5%, rgba(63,224,255,.20), transparent 60%),
+                radial-gradient(60vmax 40vmax at 110% 15%, rgba(179,107,255,.20), transparent 60%),
+                radial-gradient(70vmax 50vmax at 70% 115%, color-mix(in srgb, var(--level) 22%, transparent), transparent 60%); }
+  main { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; padding: 18px 16px 120px; }
+
+  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  header img { height: 34px; width: auto; display: block; }
+  .lang { color: var(--text); text-decoration: none; font-size: 13px; font-weight: 600; border: 1px solid var(--stroke); border-radius: 999px; padding: 6px 12px; background: rgba(255,255,255,.04); }
+  .kicker { font-size: 11.5px; font-weight: 600; letter-spacing: 1.4px; color: var(--cyan); text-transform: uppercase; }
+  .hero { margin: 26px 0 8px; }
+  h1 { font-size: 30px; line-height: 1.15; margin: 6px 0 0; font-weight: 700; }
+  h1 span { color: var(--cyan); text-shadow: 0 0 24px rgba(63,224,255,.45); }
+  .lede { color: var(--dim); font-size: 14px; margin: 8px 0 0; font-weight: 300; }
+
+  .card { position: relative; background: var(--card); border: 1px solid var(--stroke); border-radius: 22px; padding: 18px; margin: 14px 0;
+          backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 10px 40px rgba(0,0,0,.35); }
+  .card.glow { border-color: rgba(63,224,255,.45); box-shadow: 0 0 0 1px rgba(63,224,255,.12), 0 0 40px rgba(63,224,255,.15), 0 10px 40px rgba(0,0,0,.4); }
+  .card > .kicker { margin-bottom: 12px; }
+
+  .row { display: grid; grid-template-columns: 112px 1fr; gap: 12px; }
+  .level { display: grid; place-items: center; text-align: center; padding: 14px 8px; border-color: color-mix(in srgb, var(--level) 55%, transparent); }
+  .level .kicker { color: var(--level); font-size: 10px; margin-bottom: 8px; }
+  .badge { width: 62px; height: 62px; border-radius: 50%; display: grid; place-items: center; border: 2.5px solid var(--level);
+           box-shadow: 0 0 18px color-mix(in srgb, var(--level) 60%, transparent), inset 0 0 14px color-mix(in srgb, var(--level) 30%, transparent); }
+  .badge svg { width: 34px; height: 34px; fill: var(--level); }
+  .level b { display: block; margin-top: 8px; font-size: 15px; }
+
+  .tokens { display: flex; flex-wrap: wrap; gap: 12px 10px; }
+  .token { width: 64px; text-align: center; }
+  .ring { --c: var(--cyan); --p: 50; width: 58px; height: 58px; margin: 0 auto; border-radius: 50%; display: grid; place-items: center; position: relative;
+          background: conic-gradient(var(--c) calc(var(--p) * 1%), color-mix(in srgb, var(--c) 18%, transparent) 0);
+          box-shadow: 0 0 16px color-mix(in srgb, var(--c) 45%, transparent); }
+  .ring::after { content: ""; position: absolute; inset: 4px; border-radius: 50%; background: radial-gradient(circle at 50% 35%, #1a2744, #070c18); }
+  .ring span { position: relative; z-index: 1; font-weight: 700; font-size: 12px; letter-spacing: .3px; }
+  .token small { display: block; margin-top: 5px; font-weight: 600; font-size: 13px; color: var(--c); }
+
+  .rec { display: flex; gap: 16px; align-items: center; }
+  .match { flex: none; width: 96px; height: 96px; position: relative; }
+  .match svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .match circle { fill: none; stroke-width: 7; }
+  .match .track { stroke: rgba(63,224,255,.16); }
+  .match .bar { stroke: var(--cyan); stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(63,224,255,.8)); transition: stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1); }
+  .match div { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+  .match b { font-size: 24px; line-height: 1; } .match small { font-size: 9.5px; letter-spacing: 1.2px; color: var(--dim); margin-top: 3px; }
+  .rec > div:last-child { min-width: 0; }
+  .prog { font-size: clamp(17px, 5.2vw, 21px); font-weight: 700; line-height: 1.2; overflow-wrap: anywhere; hyphens: auto; }
+  .sub { color: var(--cyan); font-size: 13px; font-weight: 500; margin-top: 4px; }
+  .muted { color: var(--dim); font-size: 13px; font-weight: 300; }
+  p { font-size: 14.5px; line-height: 1.55; font-weight: 300; }
+  a { color: var(--cyan); }
+
+  .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .fact { background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.06); border-radius: 14px; padding: 10px 12px; }
+  .fact small { display: block; color: var(--dim); font-size: 10.5px; text-transform: uppercase; letter-spacing: .9px; font-weight: 500; }
+  .fact div { font-weight: 600; font-size: 13.5px; margin-top: 3px; line-height: 1.35; }
+
+  .path { display: grid; gap: 0; }
+  .step { display: grid; grid-template-columns: 22px 1fr; gap: 12px; position: relative; padding-bottom: 14px; }
+  .step:not(:last-child)::before { content: ""; position: absolute; left: 10px; top: 20px; bottom: 0; width: 2px; background: linear-gradient(var(--c), transparent); opacity: .5; }
+  .dot { width: 22px; height: 22px; border-radius: 50%; background: radial-gradient(circle, var(--c) 35%, transparent 38%), color-mix(in srgb, var(--c) 22%, transparent); box-shadow: 0 0 14px var(--c); }
+  .step b { color: var(--c); font-size: 14px; } .step div div { font-size: 14px; font-weight: 300; line-height: 1.45; }
+
+  details { border-top: 1px solid var(--stroke); padding: 11px 0; } details:first-of-type { border-top: 0; padding-top: 0; }
+  summary { cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; }
+  summary::after { content: "+"; color: var(--cyan); font-weight: 700; } details[open] summary::after { content: "–"; }
+  ul { margin: 8px 0 0; padding-left: 18px; } li { margin: 4px 0; font-size: 14px; font-weight: 300; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { border: 1px solid var(--stroke); background: rgba(255,255,255,.04); border-radius: 999px; padding: 5px 12px; font-size: 13px; }
+
+  .dock { position: fixed; z-index: 5; left: 0; right: 0; bottom: 0; padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+          background: linear-gradient(transparent, rgba(7,12,24,.92) 30%); }
+  .dock .in { max-width: 640px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+  .btn { appearance: none; border: 0; border-radius: 16px; padding: 15px 18px; font: 600 15px Poppins, system-ui, sans-serif; color: #04121a; cursor: pointer;
+         background: linear-gradient(135deg, #3fe0ff, #7c8cff); box-shadow: 0 0 24px rgba(63,224,255,.45); display: flex; align-items: center; justify-content: center; gap: 9px; text-decoration: none; }
+  .btn[disabled] { opacity: .65; }
+  .btn.ghost { background: rgba(255,255,255,.07); color: var(--text); border: 1px solid var(--stroke); box-shadow: none; }
+  .btn svg { width: 18px; height: 18px; fill: currentColor; }
+  .spin { width: 16px; height: 16px; border: 2px solid rgba(4,18,26,.3); border-top-color: #04121a; border-radius: 50%; animation: s 1s linear infinite; }
+  @keyframes s { to { transform: rotate(360deg); } }
+  .toast { position: fixed; z-index: 6; left: 50%; bottom: 96px; transform: translateX(-50%); background: #111b30; border: 1px solid var(--stroke); border-radius: 12px;
+           padding: 10px 14px; font-size: 13px; opacity: 0; transition: opacity .3s; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.on { opacity: 1; }
+  .links { display: grid; gap: 8px; margin-top: 6px; }
+  .reveal { opacity: 0; transform: translateY(14px); animation: up .7s cubic-bezier(.2,.8,.2,1) forwards; }
+  @keyframes up { to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .reveal { animation: none; opacity: 1; transform: none; } }
+  @media (max-width: 370px) { .row { grid-template-columns: 1fr; } h1 { font-size: 26px; } }
+</style>
+</head>
+<body>
+<canvas id="sky"></canvas><div class="nebula"></div>
+<main id="app">
+  <header><img src="assets/fh-joanneum-logo-white.svg" alt="FH JOANNEUM University of Applied Sciences"></header>
+  <p class="muted" style="margin-top:30px">Loading your result… / Ergebnis wird geladen…</p>
+</main>
+<script src="programmes.js"></script>
+<script src="assets/vendor/jspdf.umd.min.js"></script>
+<script src="assets/vendor/qrcode.min.js"></script>
+<script src="assets/report.js"></script>
+<script>
+(function () {
+  // ---------- starfield ----------
+  const sky = document.getElementById('sky'), g = sky.getContext('2d');
+  let stars = [];
+  function sizeSky() {
+    const d = Math.min(2, window.devicePixelRatio || 1);
+    sky.width = innerWidth * d; sky.height = innerHeight * d;
+    stars = Array.from({ length: Math.round(innerWidth * innerHeight / 2600) }, () => ({
+      x: Math.random() * sky.width, y: Math.random() * sky.height, r: (Math.random() < .92 ? .5 + Math.random() : 1.4 + Math.random()) * d,
+      a: .2 + Math.random() * .7, t: Math.random() * 6.28, s: .4 + Math.random() * 1.6 }));
+  }
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function drawSky(ts) {
+    g.clearRect(0, 0, sky.width, sky.height);
+    for (const s of stars) {
+      const a = still ? s.a : s.a * (.55 + .45 * Math.sin(s.t + ts / 1000 * s.s));
+      g.fillStyle = `rgba(255,255,255,${a.toFixed(3)})`; g.beginPath(); g.arc(s.x, s.y, s.r, 0, 6.283); g.fill();
+    }
+    if (!still) requestAnimationFrame(drawSky);
+  }
+  sizeSky(); addEventListener('resize', sizeSky); requestAnimationFrame(drawSky);
+
+  // ---------- data from the QR link ----------
+  const COLORS = { ai:'#3fe0ff', data:'#b36bff', software:'#7c8cff', business:'#ffa24c', cloud:'#39d0c8', ux:'#ff6fb5', security:'#ff5a5f', mobile:'#ffc94d' };
+  const LABELS = { ai:'AI', data:'Data', software:'Software', business:'Business', cloud:'Cloud', ux:'UX', security:'Security', mobile:'Mobile' };
+  const q = new URLSearchParams(location.hash.slice(1) || location.search.slice(1));
+  const DE = q.get('lang') === 'de';
+  const T = (en, de) => DE ? de : en;
+  document.documentElement.lang = DE ? 'de' : 'en';
+  if (DE) Object.assign(LABELS, { ai:'KI', data:'Daten', business:'Wirtschaft', security:'Sicherheit', mobile:'Mobile Apps' });
+  const db = window.FHJ_DB || { programmes: [] };
+  const deById = {}; ((window.FHJ_DB_DE || {}).programmes || []).forEach(p => deById[p.id] = p);
+  const loc = p => { if (!p || !DE || !deById[p.id]) return p; const g = Object.assign({}, p);
+    for (const [k, v] of Object.entries(deById[p.id])) if (v && (!Array.isArray(v) || v.length)) g[k] = v; return g; };
+  const byId = id => loc(db.programmes.find(p => p.id === id));
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+  const app = document.getElementById('app');
+
+  const h2 = new URLSearchParams(location.hash.slice(1)); if (DE) h2.delete('lang'); else h2.set('lang', 'de');
+  const head = `<header><img src="assets/fh-joanneum-logo-white.svg" alt="FH JOANNEUM University of Applied Sciences">
+    <a class="lang" href="#${h2.toString()}" onclick="setTimeout(function(){location.reload()},0)">${DE ? 'EN' : 'DE'}</a></header>`;
+
+  const p = byId(q.get('p'));
+  if (!p) {
+    app.innerHTML = `${head}<section class="hero"><div class="kicker">${T('Open house', 'Tag der offenen Tür')}</div>
+      <h1>${T('Find your <span>study path</span>', 'Finde deinen <span>Studienweg</span>')}</h1></section>
+      <div class="card"><p>${T('This link has no result in it. Visit the interactive table at the open house, or browse all programmes:',
+        'Dieser Link enthält kein Ergebnis. Besuche den interaktiven Tisch am Tag der offenen Tür oder sieh dir alle Studiengänge an:')}</p>
+      <a class="btn" href="https://www.fh-joanneum.at/${DE ? '' : 'en/'}">fh-joanneum.at</a></div>`;
+    return;
+  }
+
+  const level = q.get('l') === 'bachelor' ? 'bachelor' : 'master';
+  document.documentElement.style.setProperty('--level', level === 'bachelor' ? 'var(--mint)' : 'var(--violet)');
+  const interests = (q.get('i') || '').split(',').filter(Boolean).map(x => { const [k, v] = x.split(':'); return { k, v: parseInt(v, 10) || 0 }; })
+                     .filter(x => LABELS[x.k]).map(x => Object.assign(x, { label: LABELS[x.k], color: COLORS[x.k] }));
+  const match = Math.max(0, Math.min(99, parseInt(q.get('m'), 10) || 0));
+  const runner = byId(q.get('r'));
+  const future = byId(q.get('f'));
+
+  const cap = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 1 9l11 6 9-4.9V17h2V9L12 3zm-6.8 9.2V16c0 1.9 3 3.9 6.8 3.9s6.8-2 6.8-3.9v-3.8L12 15.9l-6.8-3.7z"/></svg>';
+  const li = arr => (arr || []).map(x => `<li>${esc(x)}</li>`).join('');
+  const tokens = interests.map(i => `<div class="token" style="--c:${i.color}"><div class="ring" style="--c:${i.color};--p:${interests.length > 1 ? i.v : 100}"><span style="font-size:${i.label.length > 8 ? 8.5 : i.label.length > 6 ? 9.5 : i.label.length > 4 ? 11 : 12}px">${esc(i.label)}</span></div>
+      <small>${interests.length > 1 ? i.v + '%' : T('chosen', 'gewählt')}</small></div>`).join('');
+  const curriculum = (p.curriculum || []).map((s, k) => `<details${k === 0 ? ' open' : ''}><summary>${T('Semester ' + s.semester, s.semester + '. Semester')}<span class="muted" style="margin-left:auto;margin-right:10px">${s.courses.length}</span></summary><ul>${li(s.courses)}</ul></details>`).join('')
+                     || `<ul>${li(p.courseHighlights)}</ul>`;
+
+  const steps = level === 'bachelor'
+    ? [['#9aa7c2', T('Now', 'Jetzt'), T('School leaving certificate (Matura or equivalent)', 'Matura oder gleichwertiger Abschluss')], ['#4df2b5', `Bachelor · ${p.semesters} ${T('semesters', 'Semester')}`, p.name]]
+      .concat(future ? [['#e07bff', `Master · ${future.semesters} ${T('semesters', 'Semester')}`, future.name]] : [])
+    : [['#9aa7c2', T('Now', 'Jetzt'), T("Bachelor's degree", 'Bachelorabschluss')], ['#e07bff', `Master · ${p.semesters} ${T('semesters', 'Semester')}`, p.name]];
+  steps.push(['#ffa24c', T('Career', 'Karriere'), (p.careers || []).slice(0, 3).join(', ') || T('IT industry and research', 'IT-Branche und Forschung')]);
+
+  document.title = `${p.name} · ${T('Your FH JOANNEUM Study Path', 'Dein Studienweg an der FH JOANNEUM')}`;
+  const longest = Math.max(...p.name.split(/\s+/).map(w => w.length));
+  const C = 2 * Math.PI * 42;
+  let d = 0; const rv = () => `class="card reveal" style="animation-delay:${(d += 0.08).toFixed(2)}s"`;
+
+  app.innerHTML = `${head}
+    <section class="hero reveal"><div class="kicker">${T('Your personal result', 'Dein persönliches Ergebnis')}</div>
+      <h1>${T('Your study path at', 'Dein Studienweg an der')} <span>FH JOANNEUM</span></h1>
+      <p class="lede">${T('From the interactive table at the open house. Save it as a PDF to keep it.', 'Vom interaktiven Tisch am Tag der offenen Tür. Speichere es als PDF.')}</p></section>
+
+    <div class="row">
+      <div ${rv().replace('class="card', 'class="card level')}><div class="kicker">${T('Degree', 'Abschluss')}</div>
+        <div class="badge">${cap}</div><b>${level === 'bachelor' ? T("Bachelor's", 'Bachelor') : T("Master's", 'Master')}</b></div>
+      <div ${rv()}><div class="kicker">${T('Your interests', 'Deine Interessen')}</div><div class="tokens">${tokens || '<span class="muted">–</span>'}</div></div>
+    </div>
+
+    <div ${rv().replace('class="card', 'class="card glow')}>
+      <div class="kicker">${T('Recommended study programme', 'Empfohlener Studiengang')}</div>
+      <div class="rec">
+        <div class="match"><svg viewBox="0 0 100 100"><circle class="track" cx="50" cy="50" r="42"/>
+          <circle class="bar" cx="50" cy="50" r="42" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${C.toFixed(1)}" data-to="${(C * (1 - match / 100)).toFixed(1)}"/></svg>
+          <div><b>${match}%</b><small>${T('MATCH', 'PASSUNG')}</small></div></div>
+        <div><div class="prog"${longest >= 19 ? ' style="font-size:15.5px"' : longest >= 15 ? ' style="font-size:17px"' : ''}>${esc(p.name)}</div>
+          <div class="sub">${esc(p.degree)} · ${level === 'bachelor' ? T("Bachelor's", 'Bachelor') : T("Master's", 'Master')}${p.parentProgramme ? ' · ' + T('track of ', 'Vertiefung von ') + esc(p.parentProgramme) : ''}</div></div>
+      </div>
+      <p>${esc(p.description)}</p>
+      ${runner ? `<p class="muted" style="margin-bottom:0">${T('Also a good fit', 'Passt auch gut')}: <a style="color:var(--purple)" href="${esc(runner.url)}">${esc(runner.name)}</a></p>` : ''}
+    </div>
+
+    <div ${rv()}><div class="kicker">${T('Key facts', 'Das Wichtigste')}</div>
+      <div class="facts">
+        <div class="fact"><small>${T('ECTS · duration', 'ECTS · Dauer')}</small><div>${p.ects} ECTS · ${p.semesters} ${T('sem.', 'Sem.')}</div></div>
+        <div class="fact"><small>${T('Language', 'Sprache')}</small><div>${esc(p.language)}</div></div>
+        <div class="fact"><small>${T('Study mode', 'Studienform')}</small><div>${esc((p.studyModes || []).join(', '))}</div></div>
+        <div class="fact"><small>${T('Campus', 'Standort')}</small><div>${esc(p.campus)}</div></div>
+        <div class="fact"><small>${T('Tuition', 'Studienbeitrag')}</small><div>${esc(p.tuition)}</div></div>
+        <div class="fact"><small>${T('Start', 'Studienbeginn')}</small><div>${esc(p.startDate)}</div></div>
+      </div>
+      <p class="muted" style="margin-bottom:0"><b style="color:var(--text);font-weight:600">${T('Application', 'Bewerbung')}:</b> ${esc(p.applicationDeadlineFull || p.applicationDeadline)}</p>
+    </div>
+
+    <div ${rv()}><div class="kicker">${T('Your pathway', 'Dein Weg')}</div><div class="path">
+      ${steps.map(s => `<div class="step" style="--c:${s[0]}"><span class="dot"></span><div><b>${esc(s[1])}</b><div>${esc(s[2])}</div></div></div>`).join('')}
+    </div></div>
+
+    <div ${rv()}><div class="kicker">${T('Curriculum', 'Lehrplan')}</div>${curriculum}</div>
+    ${(p.skills || []).length ? `<div ${rv()}><div class="kicker">${T('Skills you will build', 'Das lernst du')}</div><div class="chips">${p.skills.map(s => `<span class="chip">${esc(s)}</span>`).join('')}</div></div>` : ''}
+    <div ${rv()}><div class="kicker">${T('Career paths', 'Karrierewege')}</div><ul>${li(p.careers)}</ul></div>
+    <div ${rv()}><div class="kicker">${T('Admission', 'Zugang')}</div><ul>${li(p.admission)}</ul></div>
+
+    <div ${rv()}><div class="kicker">${T('Next steps', 'Nächste Schritte')}</div><div class="links">
+      <a class="btn ghost" href="${esc(p.url)}">${T('Official programme page', 'Offizielle Studiengangsseite')}</a>
+      <button class="btn ghost" id="view">${T('Open PDF', 'PDF öffnen')}</button></div></div>
+
+    <p class="muted">${T('Your result lives only in this link. No login and no personal data are stored.', 'Dein Ergebnis steckt nur in diesem Link. Kein Login, es werden keine persönlichen Daten gespeichert.')}
+      ${T('Data collected from fh-joanneum.at on', 'Daten von fh-joanneum.at, Stand')} ${esc((db.meta || {}).collectedOn || '')}; ${T('please check the official page for binding information.', 'verbindliche Angaben auf der offiziellen Seite.')}</p>
+
+    <div class="dock"><div class="in">
+      <button class="btn" id="save" disabled><span class="spin"></span>${T('Preparing PDF…', 'PDF wird erstellt…')}</button>
+      <button class="btn ghost" id="share" aria-label="${T('Share link', 'Link teilen')}"><svg viewBox="0 0 24 24"><path d="M18 16a3 3 0 0 0-2.4 1.2l-6.7-3.4a3 3 0 0 0 0-1.6l6.7-3.4A3 3 0 1 0 15 7l-6.7 3.4a3 3 0 1 0 0 3.2L15 17a3 3 0 1 0 3-1z"/></svg></button>
+    </div></div>
+    <div class="toast" id="toast"></div>`;
+
+  requestAnimationFrame(() => setTimeout(() => { const b = document.querySelector('.match .bar'); b.style.strokeDashoffset = b.dataset.to; }, 250));
+
+  // ---------- PDF ----------
+  const toast = m => { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 3200); };
+  const saveBtn = document.getElementById('save');
+  const fileName = `FH-JOANNEUM-Study-Path-${p.name.replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '')}.pdf`;
+  let blob = null, blobUrl = null;
+  const result = { level, interests, match, p, runner, future, de: DE, id: q.get('s') || '', href: location.href, collectedOn: (db.meta || {}).collectedOn };
+  // built right away so the tap can share it immediately (share needs a fresh user gesture)
+  const ready = window.FHJReport.build(result).then(b => {
+    blob = b; blobUrl = URL.createObjectURL(b);
+    saveBtn.disabled = false;
+    saveBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 16 6.5 10.5l1.4-1.4 3.1 3.1V3h2v9.2l3.1-3.1 1.4 1.4L12 16zM5 19h14v2H5z"/></svg>${T('Save my result as PDF', 'Ergebnis als PDF speichern')}`;
+    window.__pdfReady = true; window.__pdfBlob = b;
+  }).catch(e => {
+    console.error(e); saveBtn.disabled = false; saveBtn.textContent = T('Save as PDF (print)', 'Als PDF speichern (Drucken)');
+    saveBtn.onclick = () => print();
+  });
+
+  function download() {
+    const a = document.createElement('a'); a.href = blobUrl; a.download = fileName; document.body.appendChild(a); a.click(); a.remove();
+    toast(T('PDF saved to your downloads', 'PDF in deinen Downloads gespeichert'));
+  }
+  saveBtn.addEventListener('click', async () => {
+    if (!blob) return;
+    const file = new File([blob], fileName, { type: 'application/pdf' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: document.title }); return; }
+      catch (e) { if (e.name === 'AbortError') return; }
+    }
+    download();
+  });
+  document.getElementById('view').addEventListener('click', async () => {
+    await ready; if (!blobUrl) return;
+    const w = window.open(blobUrl, '_blank'); if (!w) location.href = blobUrl;
+  });
+  document.getElementById('share').addEventListener('click', async () => {
+    const text = T(`My FH JOANNEUM study path: ${p.name} (${p.degree}), ${match}% match`, `Mein Studienweg an der FH JOANNEUM: ${p.name} (${p.degree}), ${match}% Übereinstimmung`);
+    if (navigator.share) { try { await navigator.share({ title: document.title, text, url: location.href }); } catch (e) {} }
+    else { try { await navigator.clipboard.writeText(location.href); toast(T('Link copied', 'Link kopiert')); } catch (e) { toast(location.href); } }
+  });
+})();
+</script>
+</body>
+</html>
