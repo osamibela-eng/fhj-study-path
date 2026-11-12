@@ -105,6 +105,14 @@
            padding: 10px 14px; font-size: 13px; opacity: 0; transition: opacity .3s; pointer-events: none; max-width: 90vw; text-align: center; }
   .toast.on { opacity: 1; }
   .links { display: grid; gap: 8px; margin-top: 6px; }
+  .card.apply { border-color: rgba(255,162,76,.45); box-shadow: 0 0 40px rgba(255,162,76,.12), 0 10px 40px rgba(0,0,0,.4); }
+  .deadline { background: rgba(255,162,76,.12); border: 1px solid rgba(255,162,76,.45); border-radius: 14px; padding: 12px 14px; margin-bottom: 14px; }
+  .deadline small { display: block; color: var(--orange); font-size: 10.5px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+  .deadline b { display: block; font-size: 17px; margin-top: 3px; } .deadline div { font-size: 13px; font-weight: 300; color: var(--dim); margin-top: 4px; }
+  .steps { counter-reset: st; list-style: none; padding: 0; margin: 0 0 12px; }
+  .steps > li { counter-increment: st; position: relative; padding-left: 36px; margin: 0 0 12px; font-size: 14px; }
+  .steps > li::before { content: counter(st); position: absolute; left: 0; top: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--orange); color: #1a0e00; font-weight: 700; font-size: 13px; display: grid; place-items: center; box-shadow: 0 0 12px rgba(255,162,76,.6); }
+  .steps > li > div { font-weight: 300; color: var(--text); margin-top: 2px; } .steps ul { margin-top: 4px; }
   .reveal { opacity: 0; transform: translateY(14px); animation: up .7s cubic-bezier(.2,.8,.2,1) forwards; }
   @keyframes up { to { opacity: 1; transform: none; } }
   @media (prefers-reduced-motion: reduce) { .reveal { animation: none; opacity: 1; transform: none; } }
@@ -118,6 +126,7 @@
   <p class="muted" style="margin-top:30px">Loading your result… / Ergebnis wird geladen…</p>
 </main>
 <script src="programmes.js"></script>
+<script src="application.js"></script>
 <script src="assets/vendor/jspdf.umd.min.js"></script>
 <script src="assets/vendor/qrcode.min.js"></script>
 <script src="assets/report.js"></script>
@@ -196,6 +205,13 @@
   steps.push(['#ffa24c', T('Career', 'Karriere'), (p.careers || []).slice(0, 3).join(', ') || T('IT industry and research', 'IT-Branche und Forschung')]);
 
   document.title = `${p.name} · ${T('Your FH JOANNEUM Study Path', 'Dein Studienweg an der FH JOANNEUM')}`;
+  const A = (window.FHJ_APPLY || {})[p.id] || {};
+  const appUrl = (DE ? A.admissionsDe : A.admissions) || (DE ? A.pageDe : null) || p.url;
+  const datesUrl = (DE ? A.datesDe : A.dates) || appUrl;
+  const portalUrl = (DE ? A.portalDe : A.portal) || 'https://www.fh-joanneum.at/';
+  const isProc = a => /^(admissions?( procedure)?|aufnahme(verfahren)?)\s*:/i.test(a);
+  const reqs = (p.admission || []).filter(a => !isProc(a));
+  const proc = ((p.admission || []).find(isProc) || '').replace(/^[^:]*:\s*/, '');
   const longest = Math.max(...p.name.split(/\s+/).map(w => w.length));
   const C = 2 * Math.PI * 42;
   let d = 0; const rv = () => `class="card reveal" style="animation-delay:${(d += 0.08).toFixed(2)}s"`;
@@ -243,10 +259,25 @@
     <div ${rv()}><div class="kicker">${T('Curriculum', 'Lehrplan')}</div>${curriculum}</div>
     ${(p.skills || []).length ? `<div ${rv()}><div class="kicker">${T('Skills you will build', 'Das lernst du')}</div><div class="chips">${p.skills.map(s => `<span class="chip">${esc(s)}</span>`).join('')}</div></div>` : ''}
     <div ${rv()}><div class="kicker">${T('Career paths', 'Karrierewege')}</div><ul>${li(p.careers)}</ul></div>
-    <div ${rv()}><div class="kicker">${T('Admission', 'Zugang')}</div><ul>${li(p.admission)}</ul></div>
+    <div ${rv().replace('class="card', 'class="card apply')}><div class="kicker" style="color:var(--orange)">${T('How to apply', 'So bewirbst du dich')}</div>
+      <div class="deadline"><small>${T('Application deadline', 'Bewerbungsfrist')}</small><b>${esc(p.applicationDeadline || '–')}</b>
+        ${p.applicationDeadlineFull && p.applicationDeadlineFull !== p.applicationDeadline ? `<div>${esc(p.applicationDeadlineFull)}</div>` : ''}</div>
+      <ol class="steps">
+        <li><b>${T('Check the requirements', 'Voraussetzungen prüfen')}</b><ul>${li(reqs)}</ul></li>
+        <li><b>${T('Apply online', 'Online bewerben')}</b><div>${T('Submit your application and documents through the FH JOANNEUM online application before the deadline.', 'Reiche deine Bewerbung mit allen Unterlagen über die Online-Bewerbung der FH JOANNEUM vor Fristende ein.')}</div></li>
+        ${proc ? `<li><b>${T('Admission procedure', 'Aufnahmeverfahren')}</b><div>${esc(proc)}</div></li>` : ''}
+        <li><b>${T('Start your studies', 'Studienstart')}</b><div>${esc(p.startDate)}</div></li>
+      </ol>
+      <div class="links">
+        <a class="btn" style="background:linear-gradient(135deg,#ffa24c,#ff6fb5);box-shadow:0 0 24px rgba(255,162,76,.4)" href="${esc(appUrl)}">${T('Application page for this programme', 'Bewerbungsseite dieses Studiengangs')}</a>
+        <a class="btn ghost" href="${esc(datesUrl)}">${T('Dates & deadlines', 'Termine & Fristen')}</a>
+        <a class="btn ghost" href="${esc(portalUrl)}">${T('FH JOANNEUM online application', 'Online-Bewerbung der FH JOANNEUM')}</a>
+      </div>
+      ${p.contact ? `<p class="muted" style="margin:10px 0 0">${T('Questions?', 'Fragen?')} <a href="mailto:${esc(p.contact)}">${esc(p.contact)}</a></p>` : ''}
+    </div>
 
-    <div ${rv()}><div class="kicker">${T('Next steps', 'Nächste Schritte')}</div><div class="links">
-      <a class="btn ghost" href="${esc(p.url)}">${T('Official programme page', 'Offizielle Studiengangsseite')}</a>
+    <div ${rv()}><div class="kicker">${T('More', 'Mehr')}</div><div class="links">
+      <a class="btn ghost" href="${esc(DE ? (A.pageDe || p.url) : p.url)}">${T('Official programme page', 'Offizielle Studiengangsseite')}</a>
       <button class="btn ghost" id="view">${T('Open PDF', 'PDF öffnen')}</button></div></div>
 
     <p class="muted">${T('Your result lives only in this link. No login and no personal data are stored.', 'Dein Ergebnis steckt nur in diesem Link. Kein Login, es werden keine persönlichen Daten gespeichert.')}

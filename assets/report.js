@@ -160,6 +160,86 @@
     }
     const ensure = h => { if (y + h > H - 18) newPage(); };
 
+    // ---------- How to apply: deadline, steps, links + QR to this programme's application page ----------
+    function applySection() {
+      const A = (window.FHJ_APPLY || {})[p.id] || {};
+      const appUrl = (R.de ? A.admissionsDe : A.admissions) || (R.de ? A.pageDe : null) || p.url;
+      const datesUrl = (R.de ? A.datesDe : A.dates) || appUrl;
+      const portalUrl = (R.de ? A.portalDe : A.portal) || 'https://www.fh-joanneum.at/';
+      const isProc = a => /^(admissions?( procedure)?|aufnahme(verfahren)?)\s*:/i.test(a);
+      const reqs = (p.admission || []).filter(a => !isProc(a));
+      const proc = ((p.admission || []).find(isProc) || '').replace(/^[^:]*:\s*/, '');
+      const steps = [
+        [T('Check the requirements', 'Voraussetzungen prüfen'), reqs],
+        [T('Apply online', 'Online bewerben'), [T('Submit your application and documents through the FH JOANNEUM online application before the deadline.',
+                                                  'Reiche deine Bewerbung mit allen Unterlagen über die Online-Bewerbung der FH JOANNEUM vor Fristende ein.')]],
+      ];
+      if (proc) steps.push([T('Admission procedure', 'Aufnahmeverfahren'), [proc]]);
+      steps.push([T('Start your studies', 'Studienstart'), [p.startDate || '']]);
+
+      const x0 = M + 6, colW = W - 2 * M - 12 - 50, sz = 7.8;
+      font('Light', sz, C.text);
+      const stepLines = steps.map(([, items]) => items.map(t => wrap(t, colW - 12)));
+      const deadline = p.applicationDeadline || '';
+      const fullLines = (font('Light', 7.6, C.text), wrap(p.applicationDeadlineFull && p.applicationDeadlineFull !== deadline ? p.applicationDeadlineFull : '', colW - 8));
+      const stepsH = stepLines.reduce((a, it) => a + 6 + it.reduce((b, l) => b + l.length, 0) * lh(sz) + 2.5, 0);
+      const dlHead = (font('Bold', 10.5, C.text), wrap(deadline || '–', colW - 8).slice(0, 2));
+      const dlH = 9.5 + dlHead.length * lh(10.5) + fullLines.length * lh(7.6) + 1.5;
+      const h = Math.max(22 + dlH + 5 + stepsH + 2, 96);
+      ensure(h);
+      const y0 = y;
+      card(M, y0, W - 2 * M, h, C.orange);
+      kicker(T('How to apply', 'So bewirbst du dich'), x0, y0 + 6, C.orange);
+      font('Bold', 13, C.text); text(T('Apply for ', 'Bewirb dich für ') + p.name, x0, y0 + 10.5, { maxWidth: colW + 40 });
+
+      // deadline highlight
+      let yy = y0 + 20;
+      alpha(0.14); doc.setFillColor(C.orange); doc.roundedRect(x0, yy, colW, dlH, 3, 3, 'F'); alpha(1);
+      doc.setDrawColor(mixHex(C.orange, 0.6)); doc.setLineWidth(0.3); doc.roundedRect(x0, yy, colW, dlH, 3, 3, 'S');
+      font('SemiBold', 6.6, C.orange); doc.setCharSpace(0.3); text(T('APPLICATION DEADLINE', 'BEWERBUNGSFRIST'), x0 + 4, yy + 3.2); doc.setCharSpace(0);
+      font('Bold', 10.5, C.text); dlHead.forEach((l, i) => text(l, x0 + 4, yy + 7.4 + i * lh(10.5)));
+      font('Light', 7.6, C.text); fullLines.forEach((l, i) => text(l, x0 + 4, yy + 8.6 + dlHead.length * lh(10.5) + i * lh(7.6)));
+      yy += dlH + 5;
+
+      // numbered steps
+      steps.forEach(([title], i) => {
+        doc.setFillColor(C.orange); doc.circle(x0 + 2.6, yy + 2.1, 2.6, 'F');
+        font('Bold', 7.5, '#1A0E00'); text(String(i + 1), x0 + 2.6, yy + 2.15, { align: 'center', baseline: 'middle' });
+        font('SemiBold', 8.6, C.text); text(title, x0 + 8, yy + 0.2);
+        yy += 6;
+        font('Light', sz, C.text);
+        stepLines[i].forEach(ls => {
+          if (stepLines[i].length > 1) { doc.setFillColor(mixHex(C.orange, 0.8)); doc.circle(x0 + 9.2, yy + 1.4, 0.5, 'F'); }
+          ls.forEach(l => { text(l, x0 + (stepLines[i].length > 1 ? 11 : 8), yy); yy += lh(sz); });
+        });
+        yy += 2.5;
+      });
+
+      // right column: QR to the application page + links
+      const qs = 38, qx = W - M - 6 - qs, qy = y0 + 20;
+      if (window.qrcode) {
+        const qr = window.qrcode(0, 'M'); qr.addData(appUrl); qr.make();
+        const cnt = qr.getModuleCount(), cell = (qs - 4) / cnt;
+        doc.setFillColor('#FFFFFF'); doc.roundedRect(qx, qy, qs, qs, 2, 2, 'F');
+        doc.setFillColor('#070C18');
+        for (let r = 0; r < cnt; r++) for (let c = 0; c < cnt; c++) if (qr.isDark(r, c)) doc.rect(qx + 2 + c * cell, qy + 2 + r * cell, cell + 0.02, cell + 0.02, 'F');
+        doc.link(qx, qy, qs, qs, { url: appUrl });
+      }
+      font('Medium', 6.8, C.dim); text(T('Scan: application page', 'Scannen: Bewerbungsseite'), qx + qs / 2, qy + qs + 2, { align: 'center' });
+      let ly = qy + qs + 9;
+      const button = (label, url, col) => {
+        alpha(0.16); doc.setFillColor(col); doc.roundedRect(qx - 2, ly, qs + 4, 8, 2.5, 2.5, 'F'); alpha(1);
+        doc.setDrawColor(mixHex(col, 0.7)); doc.setLineWidth(0.3); doc.roundedRect(qx - 2, ly, qs + 4, 8, 2.5, 2.5, 'S');
+        font('SemiBold', 7.2, col); text(label + '  ↗', qx + qs / 2, ly + 4.1, { align: 'center', baseline: 'middle' });
+        doc.link(qx - 2, ly, qs + 4, 8, { url }); ly += 10;
+      };
+      button(T('Application page', 'Bewerbungsseite'), appUrl, C.orange);
+      button(T('Dates & deadlines', 'Termine & Fristen'), datesUrl, C.cyan);
+      button(T('Apply online', 'Online-Bewerbung'), portalUrl, C.mint);
+      if (p.contact) { font('Light', 6.8, C.dim); doc.textWithLink(p.contact, qx + qs / 2 - doc.getTextWidth(p.contact) / 2, ly + 1, { url: 'mailto:' + p.contact, baseline: 'top' }); }
+      y = y0 + h + 6;
+    }
+
     // ================= PAGE 1 =================
     newPage();
     kicker(T('Your personal result', 'Dein persönliches Ergebnis'), M, y);
@@ -267,8 +347,12 @@
     });
     y += ph + 6;
 
-    // ================= PAGE 2: curriculum (continues page 2 if the pathway already moved there) =================
+    // ================= PAGE 2: how to apply (continues page 2 if the pathway already moved there) =================
     if (page === 1) newPage(); else y += 2;
+    applySection();
+
+    // ================= curriculum =================
+    ensure(40);
     kicker(T('Curriculum', 'Lehrplan'), M, y);
     font('Bold', 17, C.text); text(p.name, M, y + 5, { maxWidth: W - 2 * M }); y += 15;
     const sems = p.curriculum && p.curriculum.length ? p.curriculum : [{ semester: 1, courses: p.courseHighlights || [] }];
@@ -300,8 +384,7 @@
     // ================= skills / careers / admission / next steps =================
     const lists = [
       [T('Skills you will build', 'Das lernst du'), p.skills, C.cyan],
-      [T('Career paths', 'Karrierewege'), p.careers, C.orange],
-      [T('Admission', 'Zugang'), p.admission, levelCol]
+      [T('Career paths', 'Karrierewege'), p.careers, C.orange]
     ].filter(l => l[1] && l[1].length);
     for (const [title, items, col] of lists) {
       font('Light', 8, C.text);
@@ -316,27 +399,6 @@
       y += h + 4;
     }
 
-    // next steps with a QR to the official programme page
-    const nh = 44; ensure(nh);
-    card(M, y, W - 2 * M, nh, C.cyan);
-    kicker(T('Next steps', 'Nächste Schritte'), M + 6, y + 5);
-    const nx = M + 6, nw = W - 2 * M - 52;
-    font('SemiBold', 8.6, C.text); text(T('Application', 'Bewerbung'), nx, y + 11);
-    font('Light', 7.8, C.text);
-    let ny = y + 15.5;
-    wrap(p.applicationDeadlineFull || p.applicationDeadline || '', nw).slice(0, 4).forEach(l => { text(l, nx, ny); ny += lh(7.8); });
-    font('SemiBold', 8.6, C.text); text(T('Programme page & contact', 'Studiengangsseite & Kontakt'), nx, ny + 2); ny += 6.5;
-    font('Medium', 7.8, C.cyan); doc.textWithLink(p.url, nx, ny, { url: p.url, baseline: 'top' }); ny += lh(7.8);
-    if (p.contact) { font('Light', 7.8, C.text); doc.textWithLink(p.contact, nx, ny, { url: 'mailto:' + p.contact, baseline: 'top' }); }
-    if (window.qrcode) {
-      const qr = window.qrcode(0, 'M'); qr.addData(p.url); qr.make();
-      const cnt = qr.getModuleCount(), qs = 34, qx = W - M - 6 - qs, qy = y + 5, cell = (qs - 4) / cnt;
-      doc.setFillColor('#FFFFFF'); doc.roundedRect(qx, qy, qs, qs, 2, 2, 'F');
-      doc.setFillColor('#070C18');
-      for (let r = 0; r < cnt; r++) for (let c = 0; c < cnt; c++) if (qr.isDark(r, c)) doc.rect(qx + 2 + c * cell, qy + 2 + r * cell, cell + 0.02, cell + 0.02, 'F');
-      doc.link(qx, qy, qs, qs, { url: p.url });
-    }
-    y += nh + 4;
     ensure(12);
     font('Light', 6.6, C.dim);
     wrap(T(`Programme data collected from fh-joanneum.at (${R.collectedOn || ''}). Please check the official programme page for binding information.`,
